@@ -290,6 +290,7 @@ footer{background:#060E1C;color:rgba(255,255,255,.5);padding:56px 6% 32px}
 .cookie-text strong{color:#fff;font-weight:600}
 .cookie-btns{display:flex;gap:8px;align-items:center;flex-shrink:0;flex-wrap:wrap}
 .cookie-accept{background:var(--gold);color:var(--navy);font-size:13px;font-weight:700;padding:8px 18px;border-radius:var(--rs);border:none;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap}
+.cookie-from{font-size:11px;color:rgba(255,255,255,.38);margin-top:8px;font-style:italic;letter-spacing:.1px}
 .cookie-decline{background:none;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);font-size:13px;font-weight:500;padding:8px 14px;border-radius:var(--rs);cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;transition:all .2s}
 .cookie-decline:hover{color:#fff;border-color:rgba(255,255,255,.4)}
 
@@ -931,7 +932,8 @@ hr.div{border:none;border-top:1px solid var(--border);margin:0}
 <!-- COOKIE BANNER -->
 <div class="cookie" id="cookie-banner">
   <div class="cookie-text">
-    <strong>Vi bruger cookies.</strong> Denne side bruger cookies til at tracke din adfærd, analysere dine præferencer og generere KPI'er vi aldrig bruger til noget. Det er lidt ligesom vores mellemledere.
+    <div id="cookie-msg-text"></div>
+    <div class="cookie-from" id="cookie-from"></div>
   </div>
   <div class="cookie-btns">
     <button class="cookie-accept" onclick="dismissCookie()">Accepter alle</button>
@@ -1250,9 +1252,109 @@ function sendChat(){
   },delay);
 }
 
-// ── COOKIE BANNER ─────────────────────────────────────
-setTimeout(()=>{document.getElementById('cookie-banner').classList.add('show')},1800);
-function dismissCookie(){document.getElementById('cookie-banner').classList.remove('show')}
+// ── COOKIE ROTATING MESSAGES ─────────────────────────
+const cookieMsgs = [
+  {
+    from: '🤵 Søren, SVP Strategi & Vision',
+    text: 'Det er et <strong>rigtig godt spørgsmål</strong>, om du vil acceptere cookies. Teamet har drøftet det på mange niveauer, og der er fuld alignment. Vi mangler bare din signatur for at lukke projektet.'
+  },
+  {
+    from: '👩‍💼 Katrine, Head of Process Excellence',
+    text: 'Vi har udarbejdet en <strong>as-is-analyse af din cookiestatus</strong>. To-be-tilstanden er klar og veldokumenteret: du accepterer. Vi mangler bare din sign-off for at lukke fasen.'
+  },
+  {
+    from: '👔 Michael, Director Stakeholder Relations',
+    text: 'Direktionen er informeret. HR er informeret. IT er informeret. Marketing er informeret. <strong>Den eneste der mangler, er dig.</strong> Tryk accepter, så ingen føler sig forbigået.'
+  },
+  {
+    from: '👩‍💻 Annette, Chief Change Officer',
+    text: 'Vores cookies er vores vigtigste ressource, og de fortjener din accept. At afvise dem skaber <strong>unødig modstand i forandringsprocessen</strong> og presser trivselsscoren ned.'
+  },
+  {
+    from: '👩‍💼 Katrine, Head of Process Excellence',
+    text: 'Vi har lavet en <strong>RACI-matrix for cookie-projektet</strong>. Du er placeret i Responsible-kolonnen. Det er din opgave at acceptere. Matrixen er vedhæftet som bilag til denne besked.'
+  },
+  {
+    from: '👔 Michael, Director Stakeholder Relations',
+    text: 'Vi har sat <strong>11 kolleger på CC</strong> i forbindelse med din cookiestatus. For at undgå en uhensigtsmæssig eskalation til direktionsniveauet, bedes du acceptere inden kl. 16.'
+  },
+  {
+    from: '👩‍💻 Annette, Chief Change Officer',
+    text: 'Vi sender en <strong>trivselsundersøgelse om din cookieoplevelse</strong> ud om kort tid. For at sikre det bedste datagrundlag beder vi dig acceptere nu, inden undersøgelsen går i luften.'
+  },
+  {
+    from: '🤵 Søren, SVP Strategi & Vision',
+    text: 'Vi har booket et møde om din cookiebeslutning til torsdag. Du behøver bare at trykke accepter for at <strong>aflyse mødet</strong>. Vi sætter gerne et nyt op, hvis du foretrækker det.'
+  },
+  {
+    from: '👩‍💼 Katrine, Head of Process Excellence',
+    text: 'Der er <strong>ingen standardproces for at afvise cookies</strong>. Cookieprocessen er dokumenteret som et lineært forløb der afsluttes med accept. Vi anbefaler at du følger processen.'
+  },
+  {
+    from: '👔 Michael, Director Stakeholder Relations',
+    text: 'For at kunne sætte dig på CC i fremtidige meddelelser om cookies, har vi brug for din accept. <strong>Det er en stakeholder-forpligtelse</strong> vi ikke kan omgå uden topledelsens godkendelse.'
+  },
+  {
+    from: '👩‍💻 Annette, Chief Change Officer',
+    text: 'Vi holder et <strong>all-hands om cookies næste uge</strong>. Af hensyn til forberedelsen vil vi gerne bekræfte din deltagelse nu. Tryk accepter, og du er automatisk tilmeldt og fritaget for mødet.'
+  },
+  {
+    from: '🤵 Søren, SVP Strategi & Vision',
+    text: 'Vi har allerede afsat <strong>budget til dine cookies i Q3</strong>. Afviser du, skal vi revidere budgetopfølgningen og kalde det en strategisk pivot. Det kræver minimum tre møder og en ny PowerPoint.'
+  },
+  {
+    from: '👩‍💼 Katrine, Head of Process Excellence',
+    text: 'En konsekvensanalyse viser at afvisning af cookies udløser <strong>4 ekstra procestrin, en ny RACI-matrix og et implementeringsforløb på 8 uger</strong>. At acceptere er ét klik.'
+  },
+  {
+    from: '👔 Michael, Director Stakeholder Relations',
+    text: '<strong>Søren er blevet orienteret</strong> om din cookiestatus. Han synes det er et rigtig godt spørgsmål og foreslår et møde. Accepter cookies nu, og mødet aflyses automatisk.'
+  },
+  {
+    from: '👩‍💻 Annette, Chief Change Officer',
+    text: 'Din afvisning af cookies er registreret som <strong>modstand mod forandring</strong>. Vi har sendt en invitation til et afklarende dialogmøde. Alternativet er en enkelt klik på accepter.'
+  },
+  {
+    from: '🤵 Søren, SVP Strategi & Vision',
+    text: 'Vi er nødt til at tage det her offline. <strong>Har du mulighed for en quick call om dine cookies tirsdag eller onsdag?</strong> Ellers kan du bare acceptere nu, og vi tager det derfra.'
+  },
+  {
+    from: '👩‍💼 Katrine, Head of Process Excellence',
+    text: 'Vi har opdateret vores cookie-implementeringsplan til <strong>version 4.2</strong>. Du er noteret som manglende sign-off. Det holder hele projektet op. En simpel accept løser det med det samme.'
+  },
+  {
+    from: '👔 Michael, Director Stakeholder Relations',
+    text: 'Vores cookie-stakeholder alignment er <strong>94,3%</strong>. Du er de manglende 5,7%. Vi er meget tæt på. En accept nu ville betyde fuld alignment for første gang i organisationens historie.'
+  },
+  {
+    from: '👩‍💻 Annette, Chief Change Officer',
+    text: 'Cookies er ikke bare cookies. De er en <strong>forandringsrejse vi inviterer dig med på</strong>. Vi har forandringsambassadører klar til at guide dig. Rejsen starter med at trykke accepter.'
+  },
+  {
+    from: '🤵 Søren, SVP Strategi & Vision',
+    text: 'Jeg er <strong>meget positiv på vegne af teamet</strong> i forhold til disse cookies. Der er mange perspektiver, men vi behøver ikke komplicere det. Lad os bare tage det offline og trykke accepter.'
+  }
+];
+
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr}
+shuffle(cookieMsgs);
+let cookieIdx=0;
+
+function showCookie(){
+  const msg=cookieMsgs[cookieIdx%cookieMsgs.length];
+  cookieIdx++;
+  document.getElementById('cookie-msg-text').innerHTML=msg.text;
+  document.getElementById('cookie-from').textContent=msg.from;
+  document.getElementById('cookie-banner').classList.add('show');
+}
+
+function dismissCookie(){
+  document.getElementById('cookie-banner').classList.remove('show');
+  const delay=20000+Math.random()*18000;
+  setTimeout(showCookie,delay);
+}
+
+setTimeout(showCookie,1800);
 </script>
 </body>
 </html>
