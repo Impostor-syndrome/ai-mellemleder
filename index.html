@@ -147,7 +147,7 @@ nav{position:sticky;top:0;z-index:200;background:var(--navy);height:64px;display
 .mgr-card:hover .mgr-more{color:var(--gold-light)}
 
 /* ── COMPARISON TABLE ── */
-.compare-wrap{overflow-x:auto}
+.compare-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--r);border:1px solid var(--border)}
 .compare-table{width:100%;border-collapse:collapse;font-size:14px}
 .compare-table th{padding:14px 20px;text-align:left;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:-.2px;border-bottom:2px solid var(--border)}
 .compare-table th:first-child{color:var(--muted);font-weight:500}
@@ -300,33 +300,126 @@ hr.div{border:none;border-top:1px solid var(--border);margin:0}
 .scroll-top:hover{background:var(--navy-mid)}
 
 /* ── RESPONSIVE ── */
-@media(max-width:1060px){
-  .footer-top{grid-template-columns:1fr 1fr;gap:36px}
+
+/* Large desktop: tighten side padding slightly */
+@media(max-width:1200px){
+  nav,footer,.trust{padding-left:5%;padding-right:5%}
+  .section{padding:84px 5%}
+  .hero{padding:80px 5% 64px}
+  .final-cta{padding:88px 5%}
 }
-@media(max-width:900px){
+
+/* Tablet landscape / small desktop */
+@media(max-width:960px){
   .problems-grid,.test-grid{grid-template-columns:repeat(2,1fr)}
   .managers-grid{grid-template-columns:repeat(2,1fr)}
-  .pricing-grid{grid-template-columns:1fr;max-width:440px;margin:0 auto}
+  .pricing-grid{grid-template-columns:1fr;max-width:480px;margin:0 auto}
   .stats-grid{grid-template-columns:repeat(2,1fr)}
   .steps-grid{grid-template-columns:1fr;gap:28px}
   .steps-grid::before{display:none}
+  .step-card p{max-width:380px}
   .nav-links{display:none}
   .hamburger{display:flex}
-  .footer-top{grid-template-columns:1fr 1fr}
+  .footer-top{grid-template-columns:1fr 1fr;gap:32px}
+  .section{padding:68px 5%}
+  .hero{padding:64px 5% 52px}
+  .final-cta{padding:68px 5%}
+  /* Reduce aggressive letter-spacing at mid sizes */
+  .hero h1{letter-spacing:-1.6px}
+  .section h2{letter-spacing:-1.2px}
+  .final-cta h2{letter-spacing:-1.2px}
+  /* Comparison table: scrollable */
+  .compare-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .compare-table{min-width:560px}
 }
-@media(max-width:640px){
-  .problems-grid,.test-grid{grid-template-columns:1fr}
+
+/* Tablet portrait */
+@media(max-width:700px){
+  .problems-grid{grid-template-columns:1fr}
+  .test-grid{grid-template-columns:1fr}
+  .managers-grid{grid-template-columns:repeat(2,1fr)}
+  .footer-top{grid-template-columns:1fr 1fr;gap:28px}
+  .hero-sub{font-size:17px}
+  .section-sub{font-size:16px}
+  .stats-grid .stat-num{font-size:26px}
+}
+
+/* Mobile */
+@media(max-width:580px){
   .managers-grid{grid-template-columns:1fr}
   .stats-grid{grid-template-columns:1fr 1fr}
-  .section{padding:60px 4%}
-  .hero{padding:60px 4% 48px}
-  nav{padding:0 4%}
-  .footer-top{grid-template-columns:1fr}
-  .footer-bottom{flex-direction:column;text-align:center}
-  .demo-picker{justify-content:center}
-  .modal-stats{grid-template-columns:repeat(3,1fr)}
-  .cookie{left:12px;right:12px;bottom:12px}
-  .cookie-btns{width:100%}
+  .section{padding:52px 5%}
+  .hero{padding:44px 5% 40px}
+  nav{padding:0 5%}
+  .mob-nav{padding:24px 5%}
+  footer{padding:40px 5% 24px}
+  .final-cta{padding:56px 5%}
+  .trust-logos{gap:18px}
+  .trust-logo{font-size:11px}
+  /* Typography */
+  .hero h1{letter-spacing:-0.8px;line-height:1.1}
+  .section h2{letter-spacing:-0.8px}
+  .final-cta h2{letter-spacing:-0.8px}
+  .hero-sub{font-size:16px;margin-bottom:32px}
+  .section-sub{font-size:15px;margin-bottom:40px}
+  /* Hero CTA: stack vertically */
+  .hero-ctas{flex-direction:column;align-items:stretch;gap:12px;margin-bottom:48px}
+  .btn-gold{text-align:center;padding:15px 20px}
+  .btn-ghost{justify-content:center}
+  /* Stats */
+  .stat-num{font-size:22px}
+  .stat-lbl{font-size:11px}
+  .stat-note{font-size:10px}
+  .stat-box{padding:16px 18px}
+  /* Demo chat */
+  .demo-picker{flex-wrap:wrap;justify-content:center;gap:8px}
+  .mgr-btn{font-size:13px;padding:8px 12px}
+  .chat-msgs{height:240px;padding:14px}
+  .chat-input-row{flex-wrap:wrap;gap:8px;padding:10px 12px}
+  .chat-input{flex:1 1 100%;order:1}
+  .chat-send{flex:1 1 100%;order:2;text-align:center}
+  /* Modals: bottom sheet on mobile */
+  .overlay{padding:0;align-items:flex-end}
+  .modal{border-radius:var(--r) var(--r) 0 0;max-height:90vh;max-width:100%;width:100%}
+  .modal-body{padding:24px}
+  .modal-header{gap:14px}
+  .modal-ava{width:56px;height:56px;font-size:26px}
+  .modal-name{font-size:18px}
+  .modal-stats{grid-template-columns:repeat(3,1fr);gap:8px}
+  .modal-stat .num{font-size:18px}
+  .modal-cta-row{flex-direction:column;gap:10px}
+  .modal-cta-row .btn-navy,.modal-cta-row .btn-outline{width:100%;text-align:center;padding:13px}
+  /* Cookie banner: stack */
+  .cookie{left:10px;right:10px;bottom:10px;flex-direction:column;gap:12px;padding:18px 20px}
+  .cookie-btns{flex-direction:column;width:100%;gap:8px}
+  .cookie-accept,.cookie-decline{text-align:center;padding:11px;width:100%}
+  /* Footer */
+  .footer-top{grid-template-columns:1fr;gap:28px}
+  .footer-bottom{flex-direction:column;text-align:center;gap:10px}
+  .footer-brand p{max-width:100%}
+  /* Scroll top button */
+  .scroll-top{bottom:100px;right:16px}
+  /* Compare table font shrink */
+  .compare-table th,.compare-table td{padding:10px 14px;font-size:13px}
+  /* Price card */
+  .price-val{font-size:38px}
+  /* Steps */
+  .step-card p{max-width:100%}
+  /* Checkout modal */
+  .checkout-modal .modal-body{padding:24px}
+}
+
+/* Very small phones */
+@media(max-width:380px){
+  .stats-grid{grid-template-columns:1fr}
+  .stat-box{padding:16px 20px}
+  nav{height:58px}
+  .mob-nav{top:58px}
+  .hero h1{font-size:30px;letter-spacing:-0.3px}
+  .section h2{font-size:26px}
+  .managers-grid{grid-template-columns:1fr}
+  .demo-picker .mgr-btn{flex:1 1 calc(50% - 4px)}
+  .modal-stats{grid-template-columns:1fr 1fr 1fr}
 }
 </style>
 </head>
